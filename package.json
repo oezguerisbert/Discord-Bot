@@ -7,6 +7,7 @@
     "@replit/database": "^2.0.1",
     "discord.js": "^12.5.3",
     "express": "^4.17.1",
+    "mongoose": "^5.12.8",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {},
