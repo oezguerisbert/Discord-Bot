@@ -2,6 +2,7 @@
 const API_TOKEN = process.env.BOT_TOKEN
 const MONGO_URI = process.env.MONGO_URI
 const mongoose = require('mongoose')
+const axios = require('axios')
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const client = new Client()
 const User = './userSchema.js'
@@ -31,48 +32,60 @@ const prefix = "!";
 mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => { console.log("DB Connected") } ).catch(err => { console.log(`Database has encountered an error ${err}`) })
 //Object for the different questions and such.
 const newLobby = {
-  shortDescription: "!newlobby: Make VC to Talk To Friends \n   ---Syntax: !newlobby {lobbyname} {expiration time}",
+  shortDescription: "!newlobby: Make VC to Talk To Friends"
   longDescription: "*A quick way to create a voice channel for you and your friends!* Or if youre like me ***then youre a lonely fuck***! Kidding of course! :D \n **---Expires After Twenty Minutes , \n ---Syntax: !newlobby {lobbyname} {expiration time}**"
 }
- 
+const calender = {
+  shortDescription: "!schedule: Make and/or check a Schedule For Your friends to Know When Your Free! All Date and Times are in PST",
+  longDescription: "`!schedule: Make a Schedule For Your Friends That You Dont Have Know Your Online` \n Syntax to make a calender: `!schedule create {'M' 'T' 'W' 'TH' 'F' 'SAT' 'SUN'} {TIME: 7:00PM} `"
+
+}
 //When message
 client.on("message", async message => {
   //Makes sure that person sending isnt a bot, and it must have a ! at the start for the bot to react in any way.
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  //Allowing there to be arguments in the commands ex: !command foo bar 
+  //Allowing there to be arguments in the commands ex: !command foo bar
   const args = message.content
      .slice(prefix.length)
      .trim()
      .split(" ")
   const command = args.shift().toLowerCase();
 
-  //Actual Commands and stuff now   
- 
-  if (command == "schedule") {  
+  //Actual Commands and stuff now
+
+  if (command == "schedule") {
     const messageUserID = message.author.id
     if (!args.length) {
-      const embed = new MessageEmbed() 
+      const embed = new MessageEmbed()
       .setAuthor("ERR:INCORRECT-SYNTAX")
       .setColor(0xFD0D72)
       .setDescription("Correct Syntax Usages:\n how to find someones gaming schedule: !schedule @user \n How to make your own gaming schedule: !schedule create {time in PST example: '7:00PM' }")
       const sendEmbed = await message.channel.send(embed)
     } else if (args[0] == "create") {
-      if (args[1] !== undefined) {
-        const newDate = await args[1]
-        console.log(messageUserID)
-        console.log(newDate)
-        const userDataCalender = new User ({
-          userID: messageUserID,
-          date: newDate,
-        }).catch(err => {console.log(err)})
-        userDataCalender.save()
-        const userData = await MyModel.find({ userID: messageUserID })
-        console.log(userData);
-      } 
+        if (args[1] !== undefined) {
+          // if () 
+          mongoose.findAll({ id: userID })
+          //All documents 
+
+          const newDate = await args[1]
+          const newTime = await args[2]
+          console.log(messageUserID)
+          console.log(newDate)
+          // const userDataCalender = new User ({
+          //   userID: messageUserID,
+          //   date: newDate,
+          // }).catch(err => {console.log(err)})
+          // console.log(userData);
+          axios.post('http://localhost:4000/api/accounts', {
+            "calenderDate": newDate,
+            "calenderTime": newTime,
+            "UserID": messageUserID,
+        })
+      }
     }
   }
-//Finished implementing the db, for some reason it doesnt save, fix that tommorow. 
+//Finished implementing the db, for some reason it doesnt save, fix that tommorow.
 if (command == "newlobby") {
   if (!args.length) {
     return message.channel.reply(`You didn't provide any arguments, ${message.author}! Syntax:  !newlobby {lobbyname: String} {expiration time, default 20 minutes: Int}`);
@@ -80,13 +93,13 @@ if (command == "newlobby") {
   //Gets Args from the command
   let newLobbyName = args[0]
   let tTD = args[1]
-  //Creates the 
+  //Creates the
   const newTeamChannel = await message.guild.channels.create(`Lobby-${newLobbyName}`, {
       type: 'voice',
-  })   
+  })
   //
   const teamChannel = await message.guild.channels.cache.find(channel => channel.name === `Lobby-${newLobbyName}`);
-  teamChannel.setParent("840322892977274890") 
+  teamChannel.setParent("840322892977274890")
   console.log()
 
   const sleepTime = tTD * 60 * 60 * 20
@@ -103,8 +116,8 @@ if (command == "newlobby") {
     sentEmbed.react("✅")
     })
     await sleep(sleepTime)
-    await teamChannel.delete()  
-    const embedThing = new MessageEmbed() 
+    await teamChannel.delete()
+    const embedThing = new MessageEmbed()
       .setAuthor("YolkBot")
       .setColor(0xa497f8)
       .setDescription("Successfully Deleted Voice Chat, Thank You For Using Our Services.")
@@ -123,9 +136,10 @@ if (command == "newlobby") {
     const sentMessage = message.channel.send(newVCEmbed).then(sentEmbed => {
     sentEmbed.react("✅")
     })
+
     await sleep(1000 * 60 * 20)
     await teamChannel.delete()
-    const embedThing = new MessageEmbed() 
+    const embedThing = new MessageEmbed()
       .setAuthor("YolkBot")
       .setColor(0xa497f8)
       .setDescription("Successfully Deleted Voice Chat, Thank You For Using Our Services.")
@@ -134,23 +148,23 @@ if (command == "newlobby") {
     await sleep(10000)
     await endMessage.delete()
   }
-  if (i = 0) 
-  { 
+  if (i = 0)
+  {
     sentMessage.delete()
   }
-  
+
       //Makes embed message of the team that was created,
-    client.on('voiceStateUpdate', async (oldState, newState) => 
+    client.on('voiceStateUpdate', async (oldState, newState) =>
     {
       const coworkingvc = 839584284675276844
-      const othervc = 102571251271258671 
-      if (!newState.channel) 
+      const othervc = 102571251271258671
+      if (!newState.channel)
       {  // Triggered if the user left a channel
         (`${newState.channel.member} Has Left The Lobby`)
       };
 
-      if (newState.channelID !== coworkingvc) 
-      {   // Triggered when the user joined the channel 
+      if (newState.channelID !== coworkingvc)
+      {   // Triggered when the user joined the channel
           if (!joinedVC.includes(newState.channel.member)) {
             i = i--
             joinedVC.push(newState.channel.member)
@@ -162,25 +176,25 @@ if (command == "newlobby") {
             const newChannelMSG = message.channel.send(newVCEmbed)
             const channel = coworkingvc;
             i = i++
-        } 
+        }
       }
-    })  
-  } 
+    })
+  }
 })
 
 client.on("message", async message => {
-  
+
   //Makes sure that person sending isnt a bot, and it must have a ! at the start for it to react in any way.
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  //Allowing there to be arguments in the commands ex: !command foo bar 
+  //Allowing there to be arguments in the commands ex: !command foo bar
   const args = message.content
      .slice(prefix.length)
      .trim()
      .split(" ")
   const command = args.shift().toLowerCase();
 
-    //Actual Commands and stuff now   
+    //Actual Commands and stuff now
 
   if (command == "help") {
     if (!args.length) {
@@ -192,11 +206,11 @@ client.on("message", async message => {
       .setFooter("To View More In-Depth Explanations of The Commands, do \n !help {command}")
       message.channel.send(embed)
     } else if (args[0] === "newlobby" || args[0] === "!newlobby") {
-      const embedLobbyNew = await new MessageEmbed() 
+      const embedLobbyNew = await new MessageEmbed()
         .setTitle("!newlobby")
         .setColor(0xa497f8)
         .setDescription(newLobby['longDescription'])
       const embed = message.channel.send(embedLobbyNew)
     }
   }
-}) 
+})

@@ -1,13 +1,8 @@
-const mongoose = require('mongoose')
-const { Schema } from 'mongoose'
+const mongoose = require('mongoose');
 
-const UserSchema = new Schema({
-  userID: Number,
-  dates: {
-    type: Mixed,
-    calenderDates = Mixed
-  }
+const User = new mongoose.Schema({
+    UserID: Number,
+    CalenderDate: String,
+    CalenderTime: String
 })
-const User = mongoose.model('userDataCalender', UserSchema);
-
-module.exports = { User }
+module.exports = mongoose.model('UserCalender', User)
