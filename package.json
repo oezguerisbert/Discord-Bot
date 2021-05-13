@@ -6,6 +6,8 @@
   "dependencies": {
     "@replit/database": "^2.0.1",
     "axios": "^0.21.1",
+    "concurrently": "^6.1.0",
+    "cors": "^2.8.5",
     "discord.js": "^12.5.3",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
@@ -16,7 +18,9 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app && node index"
+    "bot": "node index.js",
+    "server": "node app.js",
+    "start": "concurrently \"npm run server\" \"npm run bot\""
   },
   "keywords": [],
   "author": "",

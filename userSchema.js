@@ -1,8 +1,17 @@
 const mongoose = require('mongoose');
 
 const User = new mongoose.Schema({
-    UserID: Number,
-    CalenderDate: String,
-    CalenderTime: String
+    UserID: {
+      type: Number,
+      required: true
+    },
+    CalenderDate: {
+      type: String,
+      required: true
+    },
+    CalenderTime: {
+      type: String,
+      required: true
+    }
 })
 module.exports = mongoose.model('UserCalender', User)

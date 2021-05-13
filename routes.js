@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 
 const User = require("./userSchema");
-
 router.post("/", (req, res) => {
   const user = new User({
-    CalenderDate: req.body.calenderDate,
-    CalenderTime: req.body.calenderTime,
+    CalenderDate: req.body.CalenderDate,
+    CalenderTime: req.body.CalenderTime,
     UserID: req.body.UserID
   });
   user
     .save()
     .then(result => {
+      console.log(result)
     })
     .catch(err => {
       //res.json({ message: err });
@@ -19,8 +19,8 @@ router.post("/", (req, res) => {
     });
     res.json(user)
 });
-router.get('/', (req, res) => {
-  const users = User.findAll({ UserID: req.body.UserID }, (err) => {
+router.get('/accounts', async (req, res) => {
+  const users = await User.findAll({ UserID: req.body.UserID }, (err) => {
     try {
       console.log(users)
     }
@@ -28,5 +28,6 @@ router.get('/', (req, res) => {
       console.log(err)
     }
   })
+  res.send(users)
 })
 module.exports = router;

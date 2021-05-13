@@ -1,26 +1,31 @@
+//Basic server dependencies and intitialization
 const express = require("express");
+const cors = require('cors')
 const app = express();
 const mongoose = require("mongoose");
-const uri = process.env.MONGO_URI
-const PORT = process.env.PORT || 4000;
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 const routes = require("./routes");
 
-// Middleware
-app.use("/api/accounts", routes);
+//Dotenv stuff
+const dotenv = require('dotenv')
+dotenv.config()
+const uri = process.env.MONGO_URI
+const PORT = process.env.PORT || 4000;
 
-app.get("/", (req, res) => {
-  res.send("Welcome to express tutorial!");
-});
+//App using things
+app.use(express.json());
+app.use(cors());
+app.get('/', (req, res) => { 
+  res.send("Hello World")
+})
+
 
 // Connect to Database
-mongoose.connect(
-  uri,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log("connected to database!")
-);
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, () => console.log("connected to database!"));
+
+// Middleware
+app.use("", routes);
+
+
 
 
 

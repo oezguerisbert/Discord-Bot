@@ -1,7 +1,7 @@
 //Bot Stuff and Stuff
+const dotenv = require('dotenv');
+dotenv.config()
 const API_TOKEN = process.env.BOT_TOKEN
-const MONGO_URI = process.env.MONGO_URI
-const mongoose = require('mongoose')
 const axios = require('axios')
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const client = new Client()
@@ -22,17 +22,16 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-//Database with Repl
 let i = 1
 let vCIndex = 0
 let joinedVC = []
+
 //Prefix of every command
 const prefix = "!";
 
-mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => { console.log("DB Connected") } ).catch(err => { console.log(`Database has encountered an error ${err}`) })
 //Object for the different questions and such.
 const newLobby = {
-  shortDescription: "!newlobby: Make VC to Talk To Friends"
+  shortDescription: "!newlobby: Make VC to Talk To Friends",
   longDescription: "*A quick way to create a voice channel for you and your friends!* Or if youre like me ***then youre a lonely fuck***! Kidding of course! :D \n **---Expires After Twenty Minutes , \n ---Syntax: !newlobby {lobbyname} {expiration time}**"
 }
 const calender = {
@@ -40,8 +39,11 @@ const calender = {
   longDescription: "`!schedule: Make a Schedule For Your Friends That You Dont Have Know Your Online` \n Syntax to make a calender: `!schedule create {'M' 'T' 'W' 'TH' 'F' 'SAT' 'SUN'} {TIME: 7:00PM} `"
 
 }
+
+
 //When message
 client.on("message", async message => {
+  
   //Makes sure that person sending isnt a bot, and it must have a ! at the start for the bot to react in any way.
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -53,7 +55,6 @@ client.on("message", async message => {
   const command = args.shift().toLowerCase();
 
   //Actual Commands and stuff now
-
   if (command == "schedule") {
     const messageUserID = message.author.id
     if (!args.length) {
@@ -61,27 +62,30 @@ client.on("message", async message => {
       .setAuthor("ERR:INCORRECT-SYNTAX")
       .setColor(0xFD0D72)
       .setDescription("Correct Syntax Usages:\n how to find someones gaming schedule: !schedule @user \n How to make your own gaming schedule: !schedule create {time in PST example: '7:00PM' }")
-      const sendEmbed = await message.channel.send(embed)
+      const sendEmbed = message.channel.send(embed)
     } else if (args[0] == "create") {
         if (args[1] !== undefined) {
-          // if () 
-          mongoose.findAll({ id: userID })
-          //All documents 
+
 
           const newDate = await args[1]
           const newTime = await args[2]
+
           console.log(messageUserID)
           console.log(newDate)
-          // const userDataCalender = new User ({
-          //   userID: messageUserID,
-          //   date: newDate,
-          // }).catch(err => {console.log(err)})
-          // console.log(userData);
-          axios.post('http://localhost:4000/api/accounts', {
-            "calenderDate": newDate,
-            "calenderTime": newTime,
-            "UserID": messageUserID,
-        })
+          
+          function getCalender(date, time, uid) {
+            axios.get('http://Discord-Bot.jacbo1.repl.co/accounts', {
+              "UserID": uid
+            })
+          }
+          function addCalender(date, time, uid) {
+            axios.post('https://Discord-Bot.jacbo1.repl.co/', {
+              "CalenderDate": date,
+              "CalenderTime": time,
+              "UserID": uid,
+            })
+          }
+          addCalender(newDate, newTime, messageUserID)
       }
     }
   }
@@ -153,7 +157,10 @@ if (command == "newlobby") {
     sentMessage.delete()
   }
 
-      //Makes embed message of the team that was created,
+    /*----------------------------------------------------------------*/
+    /*------------------WHEN USER JOINS IT UPDATES -------------------*/
+    /* WHEN USER LEAVES IT SEND A  */
+    /*----------------------------------------------------------------*/
     client.on('voiceStateUpdate', async (oldState, newState) =>
     {
       const coworkingvc = 839584284675276844
@@ -182,35 +189,32 @@ if (command == "newlobby") {
   }
 })
 
-client.on("message", async message => {
 
-  //Makes sure that person sending isnt a bot, and it must have a ! at the start for it to react in any way.
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+/*----------------------------------------------------------------*/
+/*-----------------------------HELP COMMANDS----------------------*/
+/*----------------------------------------------------------------*/
 
-  //Allowing there to be arguments in the commands ex: !command foo bar
-  const args = message.content
-     .slice(prefix.length)
-     .trim()
-     .split(" ")
-  const command = args.shift().toLowerCase();
-
-    //Actual Commands and stuff now
-
-  if (command == "help") {
+client.on('message', async command => {
+    if (command == "help") {
     if (!args.length) {
       //New embed that returns when user doesnt put any extra arguments
-      const embed = await new MessageEmbed()
+      const embed = new MessageEmbed()
+      .setAuthor(`YolkBot Version ${VERSION}`)
       .setTitle("List Of Commands:")
       .setColor(0xFD0D72)
-      .setDescription(`\n ${newLobby['shortDescription']} \n`)
+      .setDescription(`\n ${newLobby['shortDescription']} \n ${calender['shortDescription']}`)
       .setFooter("To View More In-Depth Explanations of The Commands, do \n !help {command}")
       message.channel.send(embed)
     } else if (args[0] === "newlobby" || args[0] === "!newlobby") {
       const embedLobbyNew = await new MessageEmbed()
+        .setAuthor(`YolkBot Version ${VERSION}`)
         .setTitle("!newlobby")
         .setColor(0xa497f8)
         .setDescription(newLobby['longDescription'])
       const embed = message.channel.send(embedLobbyNew)
+    } else if (args[0] === "schedule" || args[0] === "!schedule") {
+      const embedLongDesc = await new MessageEmbed().setAuthor(`YolkBot Version ${VERSION}`).setTitle("!schedule").setColor(0xa497f8).setDescription(calender['longDescription'])
+      }
     }
-  }
-})
+    }
+  })
