@@ -74,12 +74,12 @@ client.on("message", async message => {
           console.log(newDate)
           
           function getCalender(date, time, uid) {
-            axios.get('http://Discord-Bot.jacbo1.repl.co/accounts', {
+            axios.get('http://localhost:4000', {
               "UserID": uid
             })
           }
           function addCalender(date, time, uid) {
-            axios.post('https://Discord-Bot.jacbo1.repl.co/', {
+            axios.post('http://localhost:4000', {
               "CalenderDate": date,
               "CalenderTime": time,
               "UserID": uid,
@@ -194,7 +194,15 @@ if (command == "newlobby") {
 /*-----------------------------HELP COMMANDS----------------------*/
 /*----------------------------------------------------------------*/
 
-client.on('message', async command => {
+client.on('message', async message => {
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+  //Allowing there to be arguments in the commands ex: !command foo bar
+  const args = message.content
+     .slice(prefix.length)
+     .trim()
+     .split(" ")
+  const command = args.shift().toLowerCase();
     if (command == "help") {
     if (!args.length) {
       //New embed that returns when user doesnt put any extra arguments
@@ -214,7 +222,7 @@ client.on('message', async command => {
       const embed = message.channel.send(embedLobbyNew)
     } else if (args[0] === "schedule" || args[0] === "!schedule") {
       const embedLongDesc = await new MessageEmbed().setAuthor(`YolkBot Version ${VERSION}`).setTitle("!schedule").setColor(0xa497f8).setDescription(calender['longDescription'])
+      message.channel.send(embedLongDesc)
       }
-    }
     }
   })
