@@ -6,28 +6,27 @@ router.post("/", (req, res) => {
   const user = new User({
     CalenderDate: req.body.CalenderDate,
     CalenderTime: req.body.CalenderTime,
-    UserID: req.body.UserID
+    UserID: req.body.UserID,
   });
   user
     .save()
-    .then(result => {
-      console.log(result)
+    .then((result) => {
+      console.log(result);
     })
-    .catch(err => {
+    .catch((err) => {
       //res.json({ message: err });
       console.log(err);
     });
-    res.json(user)
+  res.json(user);
 });
-router.get('/accounts', async (req, res) => {
+router.get("/accounts", async (req, res) => {
   const users = await User.findAll({ UserID: req.body.UserID }, (err) => {
     try {
-      console.log(users)
+      console.log(users);
+    } catch {
+      console.log(err);
     }
-    catch {
-      console.log(err)
-    }
-  })
-  res.send(users)
-})
+  });
+  res.send(users);
+});
 module.exports = router;

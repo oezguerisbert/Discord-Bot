@@ -1,32 +1,29 @@
 //Basic server dependencies and intitialization
 const express = require("express");
-const cors = require('cors')
+const cors = require("cors");
 const app = express();
 const mongoose = require("mongoose");
 const routes = require("./routes");
 
 //Dotenv stuff
-const dotenv = require('dotenv')
-dotenv.config()
-const uri = process.env.MONGO_URI
+const dotenv = require("dotenv");
+dotenv.config();
+const uri = process.env.MONGO_URI;
 const PORT = process.env.PORT || 4000;
 
 //App using things
 app.use(express.json());
 app.use(cors());
-app.get('/', (req, res) => { 
-  res.send("Hello World")
-})
-
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
 
 // Connect to Database
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, () => console.log("connected to database!"));
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, () =>
+  console.log("connected to database!")
+);
 
 // Middleware
 app.use("", routes);
-
-
-
-
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
