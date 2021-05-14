@@ -1,1 +1,1 @@
-Hi my name is JacBo and I can't README
+YolkBot, a Javascript driven Discord Bot that uses NodeJs, Express, Discord JS, and MongoDB Atlas. 
