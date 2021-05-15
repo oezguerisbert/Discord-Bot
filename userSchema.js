@@ -11,9 +11,9 @@ const User = new mongoose.Schema({
   },
   CalenderTime: {
     type: String,
-    required: false,
+    required: true,
   },
 });
-const userSchema = mongoose.model('userCalender', User);
+const userSchema = mongoose.model("userCalender", User);
 
-module.exports = userSchema; 
+module.exports = userSchema;

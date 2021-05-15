@@ -19,8 +19,8 @@
     "prettier": "2.3.0"
   },
   "scripts": {
-    "bot": "node index.js",
-    "server": "node app.js",
+    "bot": "node bot.js",
+    "server": "node server.js",
     "start": "concurrently \"npm run server\" \"npm run bot\""
   },
   "keywords": [],
