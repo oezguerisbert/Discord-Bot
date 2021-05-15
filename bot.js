@@ -81,7 +81,7 @@ client.on("message", async (message) => {
     await axios
       .get(`http://localhost:${PORT}/accounts`, { params: { UserID: id } })
       .then((responseData) => {
-        if (responseData.data )
+        if (responseData.data === []) {console.log(responseData.data)}
         const parsed = responseData.data
           .map((row) => `Date: ${row.CalenderDate}, Time: ${row.CalenderTime}`)
           .join("\n\n");
@@ -137,7 +137,7 @@ client.on("message", async (message) => {
   if (command == "schedule") {
     const messageUserID = message.author.id;
     if (args[0] == "create") {
-      if (args[1] !== undefined) {
+      if (args[1]) {
         let newDate = await args[1];
         let newTime = await args[2];
         postData(messageUserID, newDate, newTime);
@@ -159,13 +159,14 @@ client.on("message", async (message) => {
       //Deletes Schedule Data
       deleteData(message.author.id);
     } 
-    if (args[0].startsWith('<@')) {
-      console.log(args[0])
-      const user = getUserFromMention(args[0]).id;
-      console.log(user);
-      getData(user);
+    if (args[0]) {
+      if (args[0].startsWith('<@')) {
+          console.log(args[0])
+          const user = getUserFromMention(args[0]).id;
+          console.log(user);
+          getData(user);
+        }
     }
-    
   }
   
 
