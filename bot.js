@@ -7,7 +7,7 @@ const { Client, Intents, MessageEmbed } = require("discord.js");
 const client = new Client();
 const User = "./userSchema.js";
 const VERSION = 0.5;
-const DESIRED_LOCATION_FOR_VC = 810615937140916272
+const DESIRED_LOCATION_FOR_VC = process.env.DESIRED_LOCATION_FOR_VC
 
 let b = -1;
 let t = 0;
