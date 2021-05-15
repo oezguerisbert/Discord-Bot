@@ -79,7 +79,9 @@ client.on("message", async (message) => {
   async function getData(id) {
     await axios
       .get("http://localhost:4000/accounts", { params: { UserID: id } })
-      .then((responseData) => {
+      .then(responseData => {
+        if (responseData === []) 
+        console.log(responseData)
         const parsed = responseData.data
           .map((row) => `Date: ${row.CalenderDate}, Time: ${row.CalenderTime}`)
           .join("\n\n");
@@ -95,7 +97,7 @@ client.on("message", async (message) => {
     await axios
       .post("http://localhost:4000/", {
         CalenderDate: date,
-        CalenderTime: time,
+        CalenderTime: time, 
         UserID: id,
       })
       .then((responseData) => {
