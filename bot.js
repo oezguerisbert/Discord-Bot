@@ -78,7 +78,7 @@ client.on("message", async (message) => {
   //Get Data From DB
   async function getData(id) {
     await axios
-      .get("http://localhost:4000/accounts", { params: { UserID: id } })
+      .get("https://yolkbot.herokuapp.com/accounts", { params: { UserID: id } })
       .then((responseData) => {
         const parsed = responseData.data
           .map((row) => `Date: ${row.CalenderDate}, Time: ${row.CalenderTime}`)
@@ -92,7 +92,7 @@ client.on("message", async (message) => {
   //Post Data To DB
   async function postData(id, date, time) {
     await axios
-      .post("http://localhost:4000/", {
+      .post("https://yolkbot.herokuapp.com/", {
         CalenderDate: date,
         CalenderTime: time,
         UserID: id,
@@ -110,7 +110,7 @@ client.on("message", async (message) => {
   //Delete Data
   async function deleteData(id) {
     await axios
-      .delete("http://localhost:4000/accounts", { data: { UserID: id } })
+      .delete("https://yolkbot.herokuapp.com/accounts", { data: { UserID: id } })
       .then(() => {
         const sentMessage = new MessageEmbed()
           .setAuthor(`YolkBot ${VERSION}`)
@@ -163,6 +163,7 @@ client.on("message", async (message) => {
       console.log(user);
       getData(user);
     }
+    
   }
   
 
@@ -253,6 +254,7 @@ client.on("message", async (message) => {
 
     /*----------------------------------------------------------------*/
     /*------------------WHEN USER JOINS IT UPDATES -------------------*/
+    /*----------------------------------------------------------------*/
     /*-------------WHEN USER LEAVES IT SEND AN EMBED -----------------*/
     /*----------------------------------------------------------------*/
     client.on("voiceStateUpdate", async (oldState, newState) => {
