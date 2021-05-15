@@ -7,6 +7,7 @@ const { Client, Intents, MessageEmbed } = require("discord.js");
 const client = new Client();
 const User = "./userSchema.js";
 const VERSION = 0.5;
+const DESIRED_LOCATION_FOR_VC = 810615937140916272
 
 let b = -1;
 let t = 0;
@@ -184,7 +185,7 @@ client.on("message", async (message) => {
     const teamChannel = await message.guild.channels.cache.find(
       (channel) => channel.name === `Lobby-${newLobbyName}`
     );
-    teamChannel.setParent("840322892977274890");
+    teamChannel.setParent(DESIRED_LOCATION_FOR_VC);
     console.log();
 
     const sleepTime = tTD * 60 * 60 * 20;
