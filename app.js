@@ -19,9 +19,13 @@ app.get("/", (req, res) => {
 });
 
 // Connect to Database
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }, () =>
-  console.log("connected to database!")
-);
+mongoose 
+ .connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,   })   
+ .then(() => console.log("Database connected!"))
+ .catch(err => console.log(err));
 
 // Middleware
 app.use("", routes);

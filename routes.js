@@ -11,7 +11,7 @@ router.post("/", (req, res) => {
   user
     .save()
     .then((result) => {
-      console.log(result);
+      console.log("working")
     })
     .catch((err) => {
       //res.json({ message: err });
@@ -20,13 +20,13 @@ router.post("/", (req, res) => {
   res.json(user);
 });
 router.get("/accounts", async (req, res) => {
-  const users = await User.findAll({ UserID: req.body.UserID }, (err) => {
+  const users = await User.find({ UserID: req.body.UserID }, (err) => {
     try {
-      console.log(users);
+      console.log(`Data is equal to : ${users}`);
     } catch {
       console.log(err);
     }
   });
-  res.send(users);
+  res.json(users);
 });
 module.exports = router;

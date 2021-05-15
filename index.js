@@ -53,15 +53,15 @@ client.on("message", async (message) => {
 
   //Actual Commands and stuff now
   if (command == "schedule") {
-    const messageUserID = message.author.id;
+    const messageUserID = await message.author.id;
     if (!args.length) {
-      const embed = new MessageEmbed()
+      const embed = await new MessageEmbed()
         .setAuthor("ERR:INCORRECT-SYNTAX")
         .setColor(0xfd0d72)
         .setDescription(
           "Correct Syntax Usages:\n how to find someones gaming schedule: !schedule @user \n How to make your own gaming schedule: !schedule create {time in PST example: '7:00PM' }"
         );
-      const sendEmbed = message.channel.send(embed);
+      const sendEmbed = await message.channel.send(embed);
     } else if (args[0] == "create") {
       if (args[1] !== undefined) {
         const newDate = await args[1];
@@ -75,14 +75,11 @@ client.on("message", async (message) => {
             UserID: uid,
           });
         }
-        function addCalender(date, time, uid) {
-          axios.post("http://localhost:4000", {
-            CalenderDate: date,
-            CalenderTime: time,
-            UserID: uid,
-          });
-        }
-        addCalender(newDate, newTime, messageUserID);
+        axios.post("http://localhost:4000", {
+          CalenderDate: newDate,
+          CalenderTime: newTime,
+          UserID: messageUserID,
+        });
       }
     }
   }
@@ -117,6 +114,7 @@ client.on("message", async (message) => {
     if (tTD !== undefined) {
       console.log("Expire Input = True");
       const newVCEmbed = await new MessageEmbed()
+        .setAuthor(`YolkBot ${VERSION}`)
         .setTitle("New Room Created Successfully")
         .setColor(0xa497f8)
         .setDescription(
@@ -128,7 +126,7 @@ client.on("message", async (message) => {
       await sleep(sleepTime);
       await teamChannel.delete();
       const embedThing = new MessageEmbed()
-        .setAuthor("YolkBot")
+        .setAuthor(`YolkBot ${VERSION}`)
         .setColor(0xa497f8)
         .setDescription(
           "Successfully Deleted Voice Chat, Thank You For Using Our Services."
@@ -142,6 +140,7 @@ client.on("message", async (message) => {
       tTD === 20;
       console.log("Expire Input = false, defaulting to 20 minutes");
       const newVCEmbed = await new MessageEmbed()
+        .setAuthor(`YolkBot ${VERSION}`)
         .setTitle("New Room Created Successfully")
         .setColor(0xa497f8)
         .setDescription(
@@ -154,23 +153,24 @@ client.on("message", async (message) => {
       await sleep(1000 * 60 * 20);
       await teamChannel.delete();
       const embedThing = new MessageEmbed()
-        .setAuthor("YolkBot")
+        .setAuthor(`YolkBot ${VERSION}`)
         .setColor(0xa497f8)
         .setDescription(
           "Successfully Deleted Voice Chat, Thank You For Using Our Services."
         )
-        .setFooter("To use again, !newlobby {'title'} {expiretime}");
+        .setFooter(`To use again, !newlobby {'title'} {expiretime}`);
       const endMessage = await message.channel.send(embedThing);
       await sleep(10000);
       await endMessage.delete();
     }
     if ((i = 0)) {
+
       sentMessage.delete();
     }
 
     /*----------------------------------------------------------------*/
     /*------------------WHEN USER JOINS IT UPDATES -------------------*/
-    /* WHEN USER LEAVES IT SEND A  */
+    /*-------------WHEN USER LEAVES IT SEND AN EMBED -----------------*/
     /*----------------------------------------------------------------*/
     client.on("voiceStateUpdate", async (oldState, newState) => {
       const coworkingvc = 839584284675276844;
