@@ -2,6 +2,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const API_TOKEN = process.env.BOT_TOKEN;
+const PORT = process.env.PORT
 const axios = require("axios");
 const { Client, Intents, MessageEmbed } = require("discord.js");
 const client = new Client();
@@ -62,7 +63,7 @@ const contributions = {
   shortDescription: 
     "!contributions See The People That Made Me! (even though they are all pretty stupid!) I Wouldn't Be Here Without Them! Go Check Em Out!",
   longDescription:
-    "!contributions View The Contributers That Helped Build YolkBot and Assisted During The Countless Errors Of Building Me, (im built different that's why ;)! I Appreciate you All For Helping Me Reach Aliveness, (even though life is pretty boring, now go spice it up and use some damn commands, so I dont feel useless. :D)"
+    "!contributions View The Contributers That Helped Build YolkBot and Assisted During The Countless Errors Of Building Me, (im built different that's why ;)! I Appreciate you All For Helping Me Reach Aliveness, (even though life is pretty boring, now go spice it up and use some damn commands, so I dont feel useless. :D To Contribute To This Project And be Added To The List: http://github.com/Jac-Bo/Discord-Bot)"
 }
 /*=======================================================================================================================================================*/
 //When message
@@ -78,8 +79,9 @@ client.on("message", async (message) => {
   //Get Data From DB
   async function getData(id) {
     await axios
-      .get("https://yolkbot.herokuapp.com/accounts", { params: { UserID: id } })
+      .get(`http://localhost:${PORT}/accounts`, { params: { UserID: id } })
       .then((responseData) => {
+        if (responseData.data )
         const parsed = responseData.data
           .map((row) => `Date: ${row.CalenderDate}, Time: ${row.CalenderTime}`)
           .join("\n\n");
