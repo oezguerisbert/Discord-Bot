@@ -83,6 +83,7 @@ client.on("message", async (message) => {
         const parsed = responseData.data
           .map((row) => `Date: ${row.CalenderDate}, Time: ${row.CalenderTime}`)
           .join("\n\n");
+        if (parsed === [])
         const userDataEmbed = new MessageEmbed()
           .setAuthor(`YolkBot Version: ${VERSION}`)
           .setDescription(`${parsed}`);
@@ -157,10 +158,12 @@ client.on("message", async (message) => {
       //Deletes Schedule Data
       deleteData(message.author.id);
     } 
-    if (args[0]) {
+    if (args[0].startsWith('<@')) {
+      console.log(args[0])
       const user = getUserFromMention(args[0]).id;
       console.log(user);
-      getData(user);
+      const data = getData(user);
+      
     }
   }
   
