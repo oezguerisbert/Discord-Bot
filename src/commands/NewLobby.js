@@ -1,8 +1,6 @@
-const dotenv = require("dotenv");
 const { MessageEmbed } = require("discord.js");
 const sleep = require("../utils/sleep");
-dotenv.config();
-const DESIRED_LOCATION_FOR_VC = process.env.DESIRED_LOCATION_FOR_VC;
+const { DESIRED_LOCATION_FOR_VC, BOT_VERSION } = require("../utils/Constants");
 
 module.exports = async ({ client, message, additional }) => {
   const [commandOption, ...options] = additional;
@@ -10,8 +8,8 @@ module.exports = async ({ client, message, additional }) => {
   let joinedVC = [];
 
   if (!commandOption) {
-    return message.channel.reply(
-      `You didn't provide any arguments, ${message.author}! Syntax:  !newlobby {lobbyname: String} {expiration time, default 20 minutes: Int}`
+    return message.reply(
+      `You didn't provide any arguments, Syntax:  \`!newlobby {lobbyname: String} {expiration time, default 20 minutes: Int}\``
     );
   }
   //Creates the Lobby
@@ -20,7 +18,7 @@ module.exports = async ({ client, message, additional }) => {
   });
   //
   const teamChannel = await message.guild.channels.cache.find(
-    (channel) => channel.name === `Lobby-${newLobbyName}`
+    (channel) => channel.name === `Lobby-${commandOption}`
   );
   teamChannel.setParent(DESIRED_LOCATION_FOR_VC);
 
@@ -29,13 +27,12 @@ module.exports = async ({ client, message, additional }) => {
   message.react("👍");
   //if expire argument is there, send message and use the arg as the expire time for the VC
   if (options[0] !== undefined) {
-    console.log("Expire Input = True");
     const newVCEmbed = await new MessageEmbed()
-      .setAuthor(`YolkBot Version: ${VERSION}`)
+      .setAuthor(`YolkBot Version: ${BOT_VERSION}`)
       .setTitle("New Room Created Successfully")
       .setColor(0xa497f8)
       .setDescription(
-        `Name: **${newLobbyName}** \n\n\n *Creator*: ${message.author} \n\n *Enjoy, VC Expiring in ${options[0]} **Minutes***`
+        `Name: **${commandOption}** \n\n\n *Creator*: ${message.author} \n\n *Enjoy, VC Expiring in ${options[0]} **Minutes***`
       );
     const sentEmbed = await message.channel.send(newVCEmbed);
     sentEmbed.react("✅");
@@ -43,7 +40,7 @@ module.exports = async ({ client, message, additional }) => {
     await sleep(sleepTime); // not great but no idea how to make better, yet
     await teamChannel.delete();
     const embedThing = new MessageEmbed()
-      .setAuthor(`YolkBot ${VERSION}`)
+      .setAuthor(`YolkBot ${BOT_VERSION}`)
       .setColor(0xa497f8)
       .setDescription(
         "Successfully Deleted Voice Chat, Thank You For Using Our Services."
@@ -54,13 +51,12 @@ module.exports = async ({ client, message, additional }) => {
     });
     // If no expire argument then it defaults to twenty minutes
   } else if (options[0] === undefined) {
-    console.log("Expire Input = false, defaulting to 20 minutes");
     const newVCEmbed = await new MessageEmbed()
-      .setAuthor(`YolkBot ${VERSION}`)
+      .setAuthor(`YolkBot ${BOT_VERSION}`)
       .setTitle("New Room Created Successfully")
       .setColor(0xa497f8)
       .setDescription(
-        `Name: **${newLobbyName}** \n\n\n *Creator*: ${message.author} \n\n ***You did not put a designated time**, \n The default is 20. Enjoy, VC Expiring in 20 **Minutes***`
+        `Name: **${commandOption}** \n\n\n *Creator*: ${message.author} \n\n ***You did not put a designated time**, \n The default is 20. Enjoy, VC Expiring in 20 **Minutes***`
       );
     (await message.channel.send(newVCEmbed)).react("✅");
 
@@ -71,7 +67,7 @@ module.exports = async ({ client, message, additional }) => {
     await sleep(1000 * 60 * 20);
     await teamChannel.delete();
     const embedThing = new MessageEmbed()
-      .setAuthor(`YolkBot ${VERSION}`)
+      .setAuthor(`YolkBot ${BOT_VERSION}`)
       .setColor(0xa497f8)
       .setDescription(
         "Successfully Deleted Voice Chat, Thank You For Using Our Services."

@@ -29,8 +29,12 @@ router.post("/", (req, res) => {
 /*--------------------------------------------------*/
 
 router.get("/accounts/", async (req, res) => {
+  let userid = req.body.UserID;
+  if (req.query.UserID) {
+    userid = req.query.UserID;
+  }
   const users = await User.find(
-    { UserID: req.query.UserID ?? req.body.UserID },
+    { UserID: userid },
     { _id: 0, __v: 0, UserID: 0 },
     () => {
       try {
