@@ -27,7 +27,6 @@ module.exports = async ({ client, message, additional }) => {
   message.react("👍");
   //if expire argument is there, send message and use the arg as the expire time for the VC
   if (options[0] !== undefined) {
-    console.log("Expire Input = True");
     const newVCEmbed = await new MessageEmbed()
       .setAuthor(`YolkBot Version: ${BOT_VERSION}`)
       .setTitle("New Room Created Successfully")
@@ -52,7 +51,6 @@ module.exports = async ({ client, message, additional }) => {
     });
     // If no expire argument then it defaults to twenty minutes
   } else if (options[0] === undefined) {
-    console.log("Expire Input = false, defaulting to 20 minutes");
     const newVCEmbed = await new MessageEmbed()
       .setAuthor(`YolkBot ${BOT_VERSION}`)
       .setTitle("New Room Created Successfully")
