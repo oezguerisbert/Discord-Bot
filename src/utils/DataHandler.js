@@ -1,14 +1,15 @@
-const dotenv = require("dotenv");
 const axios = require("axios");
-const { BOT_VERSION } = require("../utils/Constants");
-dotenv.config();
-const PORT = process.env.PORT;
+const { MessageEmbed } = require("discord.js");
+const { BOT_VERSION, BACKEND_PORT } = require("../utils/Constants");
 
 module.exports = {
   get: async ({ message, userid }) => {
-    const responseData = await axios.get(`http://localhost:${PORT}/accounts`, {
-      params: { UserID: userid },
-    });
+    const responseData = await axios.get(
+      `http://localhost:${BACKEND_PORT}/accounts`,
+      {
+        params: { UserID: userid },
+      }
+    );
     if (responseData) {
       if (responseData.data === []) {
         console.log(responseData.data);
@@ -23,7 +24,7 @@ module.exports = {
     }
   },
   post: async ({ message, userid, date, time }) => {
-    const responseData = await axios.post("https://yolkbot.herokuapp.com/", {
+    const responseData = await axios.post(`http://localhost:${BACKEND_PORT}/`, {
       CalenderDate: date,
       CalenderTime: time,
       UserID: userid,
@@ -39,7 +40,7 @@ module.exports = {
   },
   delete: async (userid) => {
     const responseData = await axios.delete(
-      "https://yolkbot.herokuapp.com/accounts",
+      `http://localhost:${BACKEND_PORT}/accounts`,
       {
         data: { UserID: userid },
       }

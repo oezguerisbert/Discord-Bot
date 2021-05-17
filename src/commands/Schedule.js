@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const DataHandler = require("../utils/DataHandler");
+const { BOT_VERSION } = require("../utils/Constants");
 
 const DOTW = ["M", "T", "W", "TH", "F", "SA", "SU"];
 
@@ -14,7 +15,7 @@ module.exports = async ({ userid, client, message, additional }) => {
           if (!DOTW.includes(date)) {
             let errEmbed = new MessageEmbed()
               .setAuthor(
-                `YolkBot Version: ${VERSION} \n SYNTAX_ERR: DATE EXPECTED, GOT ${date}`
+                `YolkBot Version: ${BOT_VERSION} \n SYNTAX_ERR: DATE EXPECTED, GOT ${date}`
               )
               .setDescription(
                 `You Must Specify a Valid Date To Schedule \n Valid Dates: ${DOTW.map(
@@ -26,20 +27,20 @@ module.exports = async ({ userid, client, message, additional }) => {
             });
             return;
           }
-          const [hours, minutes] = /([0-9]{1,2})\:([0-9]{1,2})(?:P|A)?M/g
+          const [_, hours, minutes] = /([0-9]{1,2})\:([0-9]{1,2})(?:P|A)?M/g
             .exec(time)
             .map((t) => parseInt(t));
           if (
-            !isNaN(hours) &&
-            !isNaN(minutes) &&
-            hours <= 12 &&
-            hours >= 0 &&
-            minutes >= 0 &&
-            minutes <= 59
+            isNaN(hours) ||
+            isNaN(minutes) ||
+            hours > 12 ||
+            hours < 0 ||
+            minutes < 0 ||
+            minutes > 59
           ) {
             let errEmbed = new MessageEmbed()
               .setAuthor(
-                `YolkBot Version: ${VERSION} \n SYNTAX_ERR: TIME EXPECTED, GOT ${time}`
+                `YolkBot Version: ${BOT_VERSION} \n SYNTAX_ERR: TIME EXPECTED, GOT ${time}`
               )
               .setDescription(`You Must Specify a Valid Time To Schedule`);
             message.channel.send(errEmbed).then((m) => {
@@ -56,7 +57,7 @@ module.exports = async ({ userid, client, message, additional }) => {
         } else {
           let errEmbed = new MessageEmbed()
             .setAuthor(
-              `YolkBot Version: ${VERSION} \n SYNTAX_ERR: DATE AND TIME EXPECTED.`
+              `YolkBot Version: ${BOT_VERSION} \n SYNTAX_ERR: DATE AND TIME EXPECTED.`
             )
             .setDescription(`You Must Specify a Valid Date & Time To Schedule`);
           message.channel.send(errEmbed).then((m) => {
@@ -75,18 +76,21 @@ module.exports = async ({ userid, client, message, additional }) => {
 
         // example-2:   @testuser: !schedule @justatester
         // result:      userid => <id of @justatester>
-        if (commandOption.startsWith("<@") && mention.endsWith(">")) {
-          commandOption = commandOption.slice(2, -1);
+        let co = commandOption;
+        if (co.startsWith("<@") && co.endsWith(">")) {
+          co = co.slice(2, -1);
 
-          if (commandOption.startsWith("!")) {
-            commandOption = commandOption.slice(1);
+          if (co.startsWith("!")) {
+            co = co.slice(1);
           }
 
-          userid = client.users.cache.get(commandOption)?.id ?? userid;
+          userid = client.users.cache.get(co)?.id ?? userid;
         }
 
         await DataHandler.get({ message, userid });
         break;
     }
+  } else {
+    await DataHandler.get({ message, userid });
   }
 };

@@ -32,6 +32,9 @@ client.on("ready", () => {
         message,
         additional: [commandOption, ...options],
       });
+    } else {
+      console.error(`This command '${command.toLowerCase()}' does not exist`);
+      return;
     }
   });
 });
