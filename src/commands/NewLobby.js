@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
-dotenv.config();
 const { MessageEmbed } = require("discord.js");
 const sleep = require("../utils/sleep");
+dotenv.config();
 const DESIRED_LOCATION_FOR_VC = process.env.DESIRED_LOCATION_FOR_VC;
 
 module.exports = async ({ client, message, additional }) => {

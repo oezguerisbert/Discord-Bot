@@ -4,7 +4,7 @@ module.exports = async ({ message }) => {
   const embedContributions = await new MessageEmbed()
     .setAuthor(`YolkBot Version: ${VERSION}\n Contributions:`)
     .setDescription(
-      `Lead Developer: JacBo__ \n Side Contributors: Otzi, Bread, Vyngaard`
+      `Lead Developer: JacBo__ \n Side Contributors: Ötzi, Bread, Vyngaard`
     )
     .setColor(0xa497f8)
     .setFooter(
