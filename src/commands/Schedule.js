@@ -18,7 +18,7 @@ module.exports = async ({ userid, client, message, additional }) => {
               )
               .setDescription(
                 `You Must Specify a Valid Date To Schedule \n Valid Dates: ${DOTW.map(
-                  (d) => `"${d}}"`
+                  (d) => `"${d}"`
                 ).join(",")}`
               );
             message.channel.send(errEmbed).then((m) => {
@@ -47,7 +47,7 @@ module.exports = async ({ userid, client, message, additional }) => {
             });
             return;
           }
-          DataHandler.post({
+          await DataHandler.post({
             userid,
             date,
             time,
@@ -66,7 +66,7 @@ module.exports = async ({ userid, client, message, additional }) => {
         }
         break;
       case "delete":
-        DataHandler.delete(message.author.id);
+        await DataHandler.delete(message.author.id);
         break;
       default:
         // get user-schedule of mentioned user or user from original message.
@@ -85,7 +85,7 @@ module.exports = async ({ userid, client, message, additional }) => {
           userid = client.users.cache.get(commandOption)?.id ?? userid;
         }
 
-        DataHandler.get(message, userid);
+        await DataHandler.get({ message, userid });
         break;
     }
   }
